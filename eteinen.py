@@ -10,4 +10,5 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(MOTION, GPIO.IN) #used to read sension detection
 GPIO.setup(RELAY, GPIO.OUT) #controls relay
 
-#this is test for git
+while (GPIO.status(MOTION) == LOW)
+	
