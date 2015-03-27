@@ -10,10 +10,12 @@ DELAY = 120 #120 seconds without movement will turn relay off
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(MOTION, GPIO.IN) #used to read sension detection
+GPIO.setup(MOTION, GPIO.IN) #used to read motion detection
 GPIO.setup(RELAY, GPIO.OUT) #controls relay
 
 while GPIO.input(MOTION)==GPIO.LOW:
+	#motion pin is low when no motion detected
+	#will wait here for motion
 	if GPIO.input(MOTION)==GPIO.HIGH: #motion detected here
 		motion_detected()
 
@@ -30,8 +32,8 @@ def motion_detected():
 		if GPIO.input(MOTION)==GPIO.HIGH:
 			motion_detected()
 		if check_time(start)==true:
-		
-
+			#if 120 seconds have passed will switch relay off
+			GPIO.output(RELAY, GPIO.LOW)
 			return main
 
 def check_time(start):
