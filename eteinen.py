@@ -34,7 +34,8 @@ def motion_detected():
 		if GPIO.input(TOUCH)==GPIO.HIGH:
 			#must be touched for 1 second to work
 			time.sleep(1)
-				if GPIO.input(TOUCH)==GPIO.HIGH:
+			
+			if GPIO.input(TOUCH)==GPIO.HIGH:
 					set_off()
 
 		#if movement detector is still seeing movement, start function again
@@ -60,11 +61,12 @@ def set_off():
 	#will wait here for a new touch to activate again
 	var = 1
 
-	while var = 1:
+	while var == 1:
 		if GPIO.input(TOUCH)==GPIO.HIGH:
 			#touch is detected
 			#must be touched for 1 secod to activate again
 			time.sleep(1)
+		
 			if GPIO.input(TOUCH)==GPIO.HIGH:
 				return main
 
