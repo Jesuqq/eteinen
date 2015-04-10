@@ -39,7 +39,7 @@ def motion_detected():
 
 		print("will now sleep for 30 seconds")
 		time.sleep(30)
-
+		waitForMovement()
 		#if movement detector is still seeing movement, start function again
 #		if GPIO.input(MOTION)==GPIO.HIGH:
 			#motion_detected()
@@ -75,6 +75,8 @@ def set_off():
 				return waitForMovement()
 
 def waitForMovement():
+	print("Waiting for motion")
+	GPIO.output(RELAY, False)
 	var = 1
 	while var == 1:
         	#motion pin is low when no motion detected
