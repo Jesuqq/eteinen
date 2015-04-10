@@ -15,20 +15,19 @@ GPIO.setup(MOTION, GPIO.IN) #used to read motion detection
 GPIO.setup(RELAY, GPIO.OUT) #controls relay
 GPIO.setup(TOUCH, GPIO.IN) #used for touch sensor
 
-while GPIO.input(MOTION)==GPIO.LOW:
-	#motion pin is low when no motion detected
-	#will wait here for motion
-	if GPIO.input(MOTION)==GPIO.HIGH: #motion detected here
-		motion_detected()
+GPIO.output(11, False)
 
+print("GPIO setup")
 
 def motion_detected():
+	print("Motion detected!")
 	var = 1
 	while var == 1:
 		#time when relay was switched on
 		start = time.time()
 		#turns relay on
-		GPIO.output(RELAY, GPIO.HIGH)
+		print("Lights turned on!!")
+		GPIO.output(RELAY, True)
 
 		#here we will check if user wants to end automatic lights with touch sensor
 		if GPIO.input(TOUCH)==GPIO.HIGH:
@@ -38,13 +37,19 @@ def motion_detected():
 			if GPIO.input(TOUCH)==GPIO.HIGH:
 					set_off()
 
+		print("will now sleep for 30 seconds")
+		time.sleep(30)
+
 		#if movement detector is still seeing movement, start function again
-		if GPIO.input(MOTION)==GPIO.HIGH:
-			motion_detected()
-		if check_time(start)==true:
+#		if GPIO.input(MOTION)==GPIO.HIGH:
+			#motion_detected()
+#			print("will not return to waitForMovement")
+#			return waitForMovement()
+		
+#		if check_time(start)==true:
 			#if 120 seconds have passed will switch relay off
-			GPIO.output(RELAY, GPIO.LOW)
-			return main
+#			GPIO.output(RELAY, False)
+#			return waitForMovement()
 
 def check_time(start):
 	global DELAY
@@ -60,7 +65,6 @@ def set_off():
 	#program will come here if touch sensor is touched
 	#will wait here for a new touch to activate again
 	var = 1
-
 	while var == 1:
 		if GPIO.input(TOUCH)==GPIO.HIGH:
 			#touch is detected
@@ -68,7 +72,16 @@ def set_off():
 			time.sleep(1)
 		
 			if GPIO.input(TOUCH)==GPIO.HIGH:
-				return main
+				return waitForMovement()
+
+def waitForMovement():
+	var = 1
+	while var == 1:
+        	#motion pin is low when no motion detected
+        	#will wait here for motion
+		if GPIO.input(MOTION)==GPIO.HIGH: #motion detected here
+			print("Motion detected!")
+			motion_detected()
 
 
-
+waitForMovement()
