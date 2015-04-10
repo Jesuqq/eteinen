@@ -4,7 +4,7 @@ import time
 MOTION = 13 #pin 13 used for motion detector
 RELAY = 11 #pin 11 used for relay
 TOUCH = 15 #pin 15 used for touch sensor 
-DELAY = 120 #120 seconds without movement will turn relay off
+DELAY = 60 #x seconds without movement will turn relay off
 
 
 #pin setup
@@ -15,19 +15,19 @@ GPIO.setup(MOTION, GPIO.IN) #used to read motion detection
 GPIO.setup(RELAY, GPIO.OUT) #controls relay
 GPIO.setup(TOUCH, GPIO.IN) #used for touch sensor
 
+#relay shut down in beginning
 GPIO.output(11, False)
 
 print("GPIO setup")
 
 def motion_detected():
-	print("Motion detected!")
 	var = 1
 	while var == 1:
 		#time when relay was switched on
 		start = time.time()
 		#turns relay on
-		print("Lights turned on!!")
 		GPIO.output(RELAY, True)
+		print("Lights turned on!!")
 
 		#here we will check if user wants to end automatic lights with touch sensor
 		if GPIO.input(TOUCH)==GPIO.HIGH:
@@ -37,28 +37,32 @@ def motion_detected():
 			if GPIO.input(TOUCH)==GPIO.HIGH:
 					set_off()
 
-		print("will now sleep for 30 seconds")
-		time.sleep(30)
-		waitForMovement()
-		#if movement detector is still seeing movement, start function again
-#		if GPIO.input(MOTION)==GPIO.HIGH:
-			#motion_detected()
-#			print("will not return to waitForMovement")
-#			return waitForMovement()
-		
-#		if check_time(start)==true:
-			#if 120 seconds have passed will switch relay off
-#			GPIO.output(RELAY, False)
-#			return waitForMovement()
+		print("will now sleep for "+str(DELAY)+" seconds")
+		time.sleep(DELAY-5)
+		start = time.time()
+		stop = time.time()
 
+		print("will now check for new motion")
+		while (stop-start) <= 5 > 0:
+			#5 seconds before delay is up will check for new motion
+			#if new motion is detected will continue without shutting relay down
+			if checkForMovement()==True:			
+				waitForMovement(True)
+			stop = time.time()
+
+		print("no new motion")
+		#if no new motion is detected for 5 
+		waitForMovement(False)
+
+#this propably wont be used
 def check_time(start):
 	global DELAY
 	#current time to see if 120sec has passed
 	end = time.time()
 	if (end-start)<DELAY:
-		return false
+		return False
 	else:
-		return true
+		return True
 
 
 def set_off():
@@ -74,16 +78,30 @@ def set_off():
 			if GPIO.input(TOUCH)==GPIO.HIGH:
 				return waitForMovement()
 
-def waitForMovement():
-	print("Waiting for motion")
-	GPIO.output(RELAY, False)
-	var = 1
-	while var == 1:
-        	#motion pin is low when no motion detected
-        	#will wait here for motion
-		if GPIO.input(MOTION)==GPIO.HIGH: #motion detected here
-			print("Motion detected!")
-			motion_detected()
+def waitForMovement(again):
 
+	if again == True:
+		print("New motion, will start again")
+		motion_detected()
 
-waitForMovement()
+	else:
+		print("Waiting for motion")
+		GPIO.output(RELAY, False)
+		var = 1
+		while var == 1:
+        		#motion pin is low when no motion detected
+        		#will wait here for motion
+			if checkForMovement()==True: #motion detected here
+				print("Motion detected!")
+				motion_detected()
+def checkForMovement():
+
+	if GPIO.input(MOTION)==GPIO.HIGH:
+		return True
+
+	else:
+		return False
+
+#value false starts motion detection with relay off
+again = False
+waitForMovement(again)
