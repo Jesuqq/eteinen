@@ -95,7 +95,7 @@ def waitForMovement(again):
 				print("Motion detected!")
 				motion_detected()
 
-		time.sleep(0.01)
+		time.sleep(0.1)
 
 def checkForMovement():
 
