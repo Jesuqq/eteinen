@@ -94,6 +94,9 @@ def waitForMovement(again):
 			if checkForMovement()==True: #motion detected here
 				print("Motion detected!")
 				motion_detected()
+
+		time.sleep(0.01)
+
 def checkForMovement():
 
 	if GPIO.input(MOTION)==GPIO.HIGH:
