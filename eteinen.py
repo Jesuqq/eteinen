@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from datetime import datetime
 
 MOTION = 13 #pin 13 used for motion detector
 RELAY = 11 #pin 11 used for relay
@@ -21,13 +22,15 @@ GPIO.output(11, False)
 print("GPIO setup")
 
 def motion_detected():
+	i = datetime.now()
+	time = i.strftime('%H:%M %d/%m/%y')
 	var = 1
 	while var == 1:
 		#time when relay was switched on
 		start = time.time()
 		#turns relay on
 		GPIO.output(RELAY, True)
-		print("Lights turned on!!")
+		print(time+ " Lights turned on!!")
 
 		#here we will check if user wants to end automatic lights with touch sensor
 		if GPIO.input(TOUCH)==GPIO.HIGH:
@@ -79,20 +82,22 @@ def set_off():
 				return waitForMovement()
 
 def waitForMovement(again):
-
+	i = datetime.now()
+	time = i.strftime('%H:%M %d/%m/%y')
+	
 	if again == True:
-		print("New motion, will start again")
+		print(time+ " New motion, will start again")
 		motion_detected()
 
 	else:
-		print("Waiting for motion")
+		print(time+ " Waiting for motion")
 		GPIO.output(RELAY, False)
 		var = 1
 		while var == 1:
         		#motion pin is low when no motion detected
         		#will wait here for motion
 			if checkForMovement()==True: #motion detected here
-				print("Motion detected!")
+				print(time+ " Motion detected!")
 				motion_detected()
 
 		time.sleep(0.1)
